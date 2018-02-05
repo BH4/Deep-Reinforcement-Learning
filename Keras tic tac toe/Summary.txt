@@ -1,0 +1,4 @@
+Have only tried 2 NN configurations. Started with a hidden layer of 10 but it seemed to take a very long time to train. Not sure why because i quit early.
+Moved on to hidden layer of 50 and did a lot of training. Currently can play without losing to the perfect (randomized perfect moves) player as far as 
+I have seen. Had some trouble learning to not play spots that are already taken so I changed the reward for that to -5 and trained some more. Seems to
+have learned. (trainer counted 0 dumb moves and the tester would have gotten stuck if it had happened)

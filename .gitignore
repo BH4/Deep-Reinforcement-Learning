@@ -1,3 +1,15 @@
+# Pictures
+*.png
+*.gif
+
+#sublime
+*.sublime-project
+*.sublime-workspace
+
+# model
+*.h5
+*.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
