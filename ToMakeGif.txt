@@ -1,1 +1,0 @@
-ffmpeg -i %03d.png output.gif -vf fps=1

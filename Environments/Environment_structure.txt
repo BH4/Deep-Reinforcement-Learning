@@ -1,0 +1,23 @@
+Rules:
+    -All non-required functions should only be used internally and should start with an underscore.
+    -Use underscore for separating out any multi-worded (function, variable, ect.) name
+    -Required functions should be at the bottom of the class.
+
+Required functions:
+    -reset():
+        Reset all game variables (ball position, player position, ect.) except for statistic variables (score)
+    -observe():
+        Return the input to the model as an array. This can be dependent on variables defined on environment creation.
+        For example the output could just be the relevant variables of the game or it could be the full game screen.
+    -act(action):
+        "action" is an element of [0, num_actions). action is always determined randomly or by argmax of the
+        model.predict(env.observe())[0] array
+        Must return: 1) observe() after updating the state, 2) reward, 3) boolean valued variable game_over
+    -statistics():
+        Environment dependent information about the games that have passed up to this point in training or testing.
+        Usually includes number of wins for games.
+        Must return a string, prefer the format of "stat1 value1 | stat2 value2 | stat3 value3 ..."
+    -reset_score():
+        Any game statistics that are not reset by reset() and are used by statistics() should be reset here.
+    -draw_state():
+        Returns a numpy 2D array with integers representing the environment. Will be made a grayscale image.
