@@ -12,15 +12,16 @@ from Testing.test import Testing
 
 if __name__ == "__main__":
     load_model = True
-    train = False
+    train = True
     test = True
 
     # model inputs
     num_actions = 3  # [move_left, stay, move_right]
-    hidden_size = 100
     grid_size = 10
     num_inputs = grid_size**2
-    learning_rate = .2
+    learning_rate = .1
+    hidden_size1 = num_inputs
+    hidden_size2 = num_inputs//2
 
     # Training time inputs
     epsilon = .1  # exploration
@@ -29,12 +30,12 @@ if __name__ == "__main__":
     # Trainer inputs
     max_memory = 500
     batch_size = 50
-    model_name = "models\\catch_model"
+    model_name = "models\\catch_model_small"
 
     # Testing inputs
     num_trials = 1000
     num_games = 10
-    gif_name = "gifs\\catch_gif"
+    gif_name = "gifs\\catch_small_model"
 
     # Define environment
     env = Catch(grid_size)
@@ -47,9 +48,9 @@ if __name__ == "__main__":
         model.compile(sgd(lr=learning_rate), "mse")
     else:
         model = Sequential()
-        model.add(Dense(hidden_size, input_shape=(num_inputs,),
+        model.add(Dense(hidden_size1, input_shape=(num_inputs,),
                         activation='relu'))
-        model.add(Dense(hidden_size, activation='relu'))
+        model.add(Dense(hidden_size2, activation='relu'))
         model.add(Dense(num_actions))
         model.compile(sgd(lr=learning_rate), "mse")
 
