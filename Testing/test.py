@@ -17,7 +17,12 @@ class Testing(object):
         """
         self.env.reset_score()
         killed_games = 0
+        p = 10
         for e in range(num_trials):
+            if int(e*100/num_trials) >= p:
+                print("Testing {}% compleate".format(p))
+                p += 10
+
             c = 0
             self.env.reset()
             game_over = False
@@ -65,7 +70,8 @@ class Testing(object):
 
             plt.imshow(self.env.draw_state(),
                        interpolation='none', cmap='gray')
-            plt.savefig("%d.png" % c)
+            plt.savefig("gifs\\%d.png" % c)
+            plt.close()
             c += 1
             while not game_over and c < kill_limit:
                 input_tm1 = input_t
@@ -79,7 +85,8 @@ class Testing(object):
 
                 plt.imshow(self.env.draw_state(),
                            interpolation='none', cmap='gray')
-                plt.savefig("%d.png" % c)
+                plt.savefig("gifs\\%d.png" % c)
+                plt.close()
                 c += 1
 
             e += 1
@@ -93,17 +100,18 @@ class Testing(object):
         call2 = ['ffmpeg', '-i', gif_name+'_temp.gif', '-filter:v',
                  '"setpts={}.0*PTS"'.format(slow_mult), gif_name+'.gif']
         subprocess.call(call2, shell=True)
+        # ffmpeg -i catch_small_model.gif -filter:v "setpts=3.0*PTS" catch_small_model_slow.gif
         print(call2)
         try:
             os.remove(gif_name+'_temp.gif')
         except Exception as e:
             print(e)
         """
-        subprocess.call(['ffmpeg', '-i', '%d.png', gif_name+'.gif'])
+        subprocess.call(['ffmpeg', '-i', 'gifs\\%d.png', gif_name+'.gif'])
 
         if delete_pics:
             for i in range(c):
                 try:
-                    os.remove("%d.png" % i)
+                    os.remove("gifs\\%d.png" % i)
                 except Exception as e:
                     print(e)
