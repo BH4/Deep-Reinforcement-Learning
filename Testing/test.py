@@ -5,9 +5,10 @@ import os
 
 
 class Testing(object):
-    def __init__(self, env, model):
+    def __init__(self, env, model, name):
         self.env = env
         self.model = model
+        self.name = name
 
     def statistics(self, num_trials, kill_limit=1000):
         """
@@ -43,15 +44,22 @@ class Testing(object):
             if c >= kill_limit:
                 killed_games += 1
 
-        print("Total trials {} | {} | Killed games {}".format(num_trials, self.env.statistics(), killed_games))
+        out_string = "Total trials {} | {} | Killed games {}".format(num_trials, self.env.statistics(), killed_games)
+        print(out_string)
 
-    def gif(self, num_games, gif_name,
-            slow_mult=2, delete_pics=True, kill_limit_per_game=1000):
+        # Add to statistics file
+        fname = "models\\" + self.name + "_stats.txt"
+        with open(fname, "a") as f:
+            f.write(out_string+"\n")
+
+    def gif(self, num_games, slow_mult=2, delete_pics=True,
+            kill_limit_per_game=1000):
         """
         Allows the model to play the game num_games times then creates a gif
         from them. Will stop a game if it lasts more than kill_limit images.
         """
         slow_mult = int(slow_mult)
+        gif_name = "gifs\\"+self.name
 
         try:
             os.remove(gif_name+'.gif')
