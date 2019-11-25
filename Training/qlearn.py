@@ -1,53 +1,15 @@
 """
-Read these two:
+Useful links for future additions:
 https://medium.freecodecamp.org/an-introduction-to-deep-q-learning-lets-play-doom-54d02d8017d8
 https://medium.freecodecamp.org/improvements-in-deep-q-learning-dueling-double-dqn-prioritized-experience-replay-and-fixed-58b130cc5682
 
+https://becominghuman.ai/beat-atari-with-deep-reinforcement-learning-part-2-dqn-improvements-d3563f665a2c
 
-(Much easier to understand. Will in the future have deuling and double currently has some others I haven't heard of) https://becominghuman.ai/beat-atari-with-deep-reinforcement-learning-part-2-dqn-improvements-d3563f665a2c
 
 target network: Implemented but not properly tested
 double dqn: Implemented
-dueling dqn: 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-These are all in my text book on desktop
-keras-rl has this stuff already. Probably copy it from there (Remember to cite it well)
-https://github.com/keras-rl/keras-rl/blob/master/rl/agents/dqn.py
-
-
-
-
-
-
-
-Need to have the option of:
-a separate target network (how is this different than double dqn?),
-double dqn (Training 2 networks on symmetrically on separate experiences (https://en.wikipedia.org/wiki/Q-learning#Double_Q-learning)),
-dueling dqn (separate the action value and the state value),
-prioritized experience replay,
-and any combination.
-https://medium.com/@awjuliani/simple-reinforcement-learning-with-tensorflow-part-4-deep-q-networks-and-beyond-8438a3e2b8df
-
-If doing it with any combination is too difficult just add them all one at a
-time to make sure they do improve performance.
+dueling dqn: Not implemented
+prioritized experience replay: Not implemented
 """
 
 import numpy as np
@@ -142,8 +104,10 @@ class Training(object):
         self.model = model
         self.name = name
 
-        if target_model_update < 1:
-            raise ValueError('target_model_update must be >= 1 since soft updates are not implemented.')
+        if target_model_update <= 0:
+            raise ValueError('target_model_update must be > 0.')
+        elif target_model_update < 1:
+            self.target_model_update = float(target_model_update)
         else:
             self.target_model_update = int(target_model_update)
 
@@ -158,8 +122,17 @@ class Training(object):
     def update_target_model_hard(self):
         self.target_model.set_weights(self.model.get_weights())
 
+    def update_target_model_soft(self):
+        tmu = self.target_model_update
+        model_weights = self.model.get_weights()
+        target_weights = self.target_model.get_weights()
+        new_weights = [tmu*model_weights[i] + (1-tmu)*target_weights[i]
+                       for i in range(len(model_weights))]
+        self.target_model.set_weights(new_weights)
+
     def train(self, epsilon, num_epoch):
         num_actions = self.model.output_shape[-1]
+        self.env.reset_score()
 
         step = 0
         for e in range(num_epoch):
@@ -191,8 +164,11 @@ class Training(object):
 
                 loss += self.model.train_on_batch(inputs, targets)
 
-                if step % self.target_model_update == 0:
-                    self.update_target_model_hard()
+                if self.target_model_update >= 1:
+                    if step % self.target_model_update == 0:
+                        self.update_target_model_hard()
+                else:
+                    self.update_target_model_soft()
 
             env_output = self.env.statistics()
             print("Epoch {}/{} | Loss {:.4f} | {}".format(e, num_epoch-1, loss,
@@ -202,3 +178,23 @@ class Training(object):
         self.model.save_weights(self.name+".h5", overwrite=True)
         with open(self.name+".json", "w") as outfile:
             json.dump(self.model.to_json(), outfile)
+
+        # Add training to statistics file
+        fname = self.name + "_stats.txt"
+        previous_training = 0
+        # make sure file exists
+        try:
+            f = open(fname, "r")
+            f.close()
+        except FileNotFoundError:
+            f = open(fname, "w")
+            f.write("Model statistics")
+            f.close()
+
+        with open(fname, "r") as f:
+            for line in f:
+                if line[:23] == "Total Training Epochs: ":
+                    previous_training = int(line[23:-1])
+
+        with open(fname, "a") as f:
+            f.write("Total Training Epochs: {}\n".format(previous_training+num_epoch))
