@@ -1,6 +1,7 @@
+from keras import Input
 from keras.models import Sequential
-from keras.layers.core import Dense
-from keras.optimizers import sgd
+from keras.layers import Dense
+from keras.optimizers import SGD as sgd
 
 from Environments.Pong import Pong
 
@@ -42,11 +43,11 @@ def setup():
 
     # Define Model
     model = Sequential()
-    model.add(Dense(hidden_size1, input_shape=(num_inputs,),
-                    activation='relu'))
+    model.add(Input((num_inputs,)))
+    model.add(Dense(hidden_size1, activation='relu'))
     model.add(Dense(hidden_size2, activation='relu'))
     model.add(Dense(num_actions))
-    model.compile(sgd(lr=learning_rate), "mse")
+    model.compile(sgd(learning_rate=learning_rate), "mse")
 
     training_input = (epsilon, epoch, max_memory, batch_size,
                       target_model_update, enable_double, enable_dueling,

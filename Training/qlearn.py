@@ -15,6 +15,8 @@ prioritized experience replay: Not implemented
 import numpy as np
 import json
 from keras.models import clone_model
+import keras
+keras.utils.disable_interactive_logging()
 
 
 class ExperienceReplay(object):
@@ -147,7 +149,7 @@ class Training(object):
                 input_tm1 = input_t
                 # get next action
                 if np.random.rand() <= epsilon:
-                    action = np.random.randint(0, num_actions, size=1)
+                    action = np.random.randint(0, num_actions)
                 else:
                     q = self.model.predict(input_tm1)
                     action = np.argmax(q[0])

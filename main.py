@@ -10,23 +10,16 @@ from Testing.test import Testing
 
 # Change what is being trained/tested here.
 from Parameters import pong_target_1000 as param
+# from Parameters import catch_perfect as param
 
-if __name__ == "__main__":
-    # These four lines can be modified.
-    load_model = True
-    train = True
-    test = True
-    make_gif = True
 
-    env, model, name, training_input, testing_input = param.setup()
-
+def run(env, model, name, training_input, testing_input, load_model, train, test, make_gif):
     (epsilon, epoch, max_memory, batch_size, target_model_update,
         enable_double, enable_dueling, dueling_type) = training_input
 
     (num_trials, num_games) = testing_input
 
-    model_name = "models\\"+name
-    gif_name = "gifs\\"+name
+    model_name = "models/"+name
 
     # Define Model
     if load_model:
@@ -49,7 +42,7 @@ if __name__ == "__main__":
         trainer.train(epsilon, epoch)
 
     if test:
-        tester = Testing(env, model)
+        tester = Testing(env, model, name)
         tester.statistics(num_trials, kill_limit=100)
         if make_gif:
-            tester.gif(num_games, gif_name)
+            tester.gif(num_games)

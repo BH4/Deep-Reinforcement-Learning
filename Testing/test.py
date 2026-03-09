@@ -48,7 +48,7 @@ class Testing(object):
         print(out_string)
 
         # Add to statistics file
-        fname = "models\\" + self.name + "_stats.txt"
+        fname = "models/" + self.name + "_stats.txt"
         with open(fname, "a") as f:
             f.write(out_string+"\n")
 
@@ -59,7 +59,7 @@ class Testing(object):
         from them. Will stop a game if it lasts more than kill_limit images.
         """
         slow_mult = int(slow_mult)
-        gif_name = "gifs\\"+self.name
+        gif_name = "gifs/"+self.name
 
         try:
             os.remove(gif_name+'.gif')
@@ -78,7 +78,7 @@ class Testing(object):
 
             plt.imshow(self.env.draw_state(),
                        interpolation='none', cmap='gray')
-            plt.savefig("gifs\\%d.png" % c)
+            plt.savefig("gifs/%d.png" % c)
             plt.close()
             c += 1
             while not game_over and c < kill_limit:
@@ -93,7 +93,7 @@ class Testing(object):
 
                 plt.imshow(self.env.draw_state(),
                            interpolation='none', cmap='gray')
-                plt.savefig("gifs\\%d.png" % c)
+                plt.savefig("gifs/%d.png" % c)
                 plt.close()
                 c += 1
 
@@ -115,11 +115,11 @@ class Testing(object):
         except Exception as e:
             print(e)
         """
-        subprocess.call(['ffmpeg', '-i', 'gifs\\%d.png', gif_name+'.gif'])
+        subprocess.call(['ffmpeg', '-i', 'gifs/%d.png', gif_name+'.gif'])
 
         if delete_pics:
             for i in range(c):
                 try:
-                    os.remove("gifs\\%d.png" % i)
+                    os.remove("gifs/%d.png" % i)
                 except Exception as e:
                     print(e)

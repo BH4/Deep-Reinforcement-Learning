@@ -1,6 +1,5 @@
 # Pictures
 *.png
-*.gif
 
 #sublime
 *.sublime-project
@@ -111,3 +110,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# models folder
+models/*
